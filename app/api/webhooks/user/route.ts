@@ -1,58 +1,50 @@
-// import { db } from "@/lib/db";
-// import { clerkClient } from "@clerk/nextjs/server";
-// import { IncomingHttpHeaders } from "http";
-// import { headers } from "next/headers";
-// import { NextResponse } from "next/server";
-// import { Webhook, WebhookRequiredHeaders } from "svix";
+import Stripe from 'stripe';
+import { headers } from 'next/headers';
+import { NextResponse } from 'next/server';
 
-// const webhookSecret = process.env.CLERK_WEBHOOK_SECRET || "";
+import { stripe } from '@/lib/stripe';
+import { db } from '@/lib/db';
+import { sign } from 'crypto';
 
-// async function handler(request: Request) {
-//   const payload = await request.json();
-//   const headersList = headers();
-//   const heads = {
-//     "svix-id": headersList.get("svix-id"),
-//     "svix-timestamp": headersList.get("svix-timestamp"),
-//     "svix-signature": headersList.get("svix-signature"),
-//   };
-//   const wh = new Webhook(webhookSecret);
-//   let evt: Event | null = null;
+export async function POST(req: Request) {
+  const body = await req.text();
+  const signature = headers().get('Stripe-Signature') as string;
 
-//   try {
-//     evt = wh.verify(
-//       JSON.stringify(payload),
-//       heads as IncomingHttpHeaders & WebhookRequiredHeaders
-//     ) as Event;
-//   } catch (err) {
-//     console.error((err as Error).message);
-//     return NextResponse.json({}, { status: 400 });
-//   }
+  let event: Stripe.Event;
 
-//   const eventType: EventType = evt.type;
-//   if (eventType === "user.created" || eventType === "user.updated") {
-//     const { id, ...attributes } = evt.data;
+  try {
+    event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    );
+  } catch (error: any) {
+    return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
+  }
 
-//     const users = await db.user.upsert({
-//       where: { externalId: id as string },
-//       create: {
-//         externalId: id as string,
-//         attributes,
-//       },
-//       update: { attributes },
-//     });
+  const session = event.data.object as Stripe.Checkout.Session;
+  const userId = session?.metadata?.userId;
+  const courseId = session?.metadata?.courseId;
 
-//     return NextResponse.json(users);
-//   }
-// }
+  if (event.type === 'checkout.session.completed') {
+    if (!userId || !courseId) {
+      return new NextResponse(`Webhook Error: Missing metadata`, {
+        status: 400,
+      });
+    }
 
-// type EventType = "user.created" | "user.updated" | "*";
+    await db.purchase.create({
+      data: {
+        courseId: courseId,
+        userId: userId,
+      },
+    });
+  } else {
+    return new NextResponse(
+      `Webhook Error: Unhandled event type ${event.type}`,
+      { status: 200 }
+    );
+  }
 
-// type Event = {
-//   data: Record<string, string | number>;
-//   object: "event";
-//   type: EventType;
-// };
-
-// export const GET = handler;
-// export const POST = handler;
-// export const PUT = handler;
+  return new NextResponse(null, { status: 200 });
+}
