@@ -4,28 +4,28 @@ import { useOrganization } from '@clerk/nextjs';
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
 
-const OrgInvitationsParams = {
-  invitations: {
-    pageSize: 5,
-    keepPreviousData: true,
-  },
-};
-
-const MembershipRequestsParams = {
-  membershipRequests: {
-    pageSize: 5,
-    keepPreviousData: true,
-  },
-};
-
 const InvitationList = () => {
+  const OrgInvitationsParams = {
+    invitations: {
+      pageSize: 5,
+      keepPreviousData: true,
+    },
+  };
+
+  const MembershipRequestsParams = {
+    membershipRequests: {
+      pageSize: 5,
+      keepPreviousData: true,
+    },
+  };
+
   const { isLoaded, invitations } = useOrganization({
     ...OrgInvitationsParams,
     ...MembershipRequestsParams,
   });
 
   if (!isLoaded) {
-    return <>Loading...</>;
+    return <>Loading</>;
   }
 
   const invitedUsers = invitations?.data?.map((inv) => {

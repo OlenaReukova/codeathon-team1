@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import * as React from "react"
+import * as React from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -11,7 +11,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from '@tanstack/react-table';
 
 import {
   Table,
@@ -20,17 +20,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import Link from "next/link"
-import { PlusCircle } from "lucide-react"
-import { useAuth } from "@clerk/nextjs"
-
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import Link from 'next/link';
+import { PlusCircle } from 'lucide-react';
+import { useAuth } from '@clerk/nextjs';
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 export function DataTable<TData, TValue>({
@@ -38,9 +37,11 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const {orgRole} = useAuth()
-  
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const { orgRole } = useAuth();
+
   const table = useReactTable({
     data,
     columns,
@@ -54,31 +55,33 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
     },
-  })
+  });
 
   return (
     <div>
-      <div className="flex items-center justify-between py-4">
+      <div className='flex items-center justify-between py-4'>
         <Input
-          placeholder="Filter user..."
-          value={(table.getColumn("emailAddress")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("emailAddress")?.setFilterValue(event.target.value)
+          placeholder='Filter user...'
+          value={
+            (table.getColumn('emailAddress')?.getFilterValue() as string) ?? ''
           }
-          className="max-w-sm"
+          onChange={(event) =>
+            table.getColumn('emailAddress')?.setFilterValue(event.target.value)
+          }
+          className='max-w-sm'
         />
-        {orgRole !=="org:member" ? 
-        <Link href="/admin/roles/create">
-          <Button>
-            <PlusCircle className="h-4 w-4 mr-2"/>
-            Invite
-          </Button>
-        </Link>
-        : ""  
-      }
-        
+        {orgRole !== 'org:member' ? (
+          <Link href='/admin/roles/create'>
+            <Button>
+              <PlusCircle className='h-4 w-4 mr-2' />
+              Invite
+            </Button>
+          </Link>
+        ) : (
+          ''
+        )}
       </div>
-      <div className="rounded-md border">
+      <div className='rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -93,7 +96,7 @@ export function DataTable<TData, TValue>({
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -103,18 +106,22 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                  data-state={row.getIsSelected() && 'selected'}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className='h-24 text-center'>
                   No results.
                 </TableCell>
               </TableRow>
@@ -122,24 +129,22 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className='flex items-center justify-end space-x-2 py-4'>
         <Button
-          variant="outline"
-          size="sm"
+          variant='outline'
+          size='sm'
           onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
+          disabled={!table.getCanPreviousPage()}>
           Previous
         </Button>
         <Button
-          variant="outline"
-          size="sm"
+          variant='outline'
+          size='sm'
           onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
+          disabled={!table.getCanNextPage()}>
           Next
         </Button>
       </div>
     </div>
-  )
+  );
 }
