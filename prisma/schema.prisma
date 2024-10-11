@@ -199,22 +199,6 @@ model Address {
   @@index([donorId])
 }
 
-// model Member {
-//   id        String  @id @default(uuid())
-//   firstName String
-//   lastName  String? @db.Text
-//   email     String? @db.Text
-//   isActive  Boolean @default(false)
-
-//   organizationId String
-//   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   @@index([organizationId])
-// }
-
 
 model Company {
   id            Int      @id @default(autoincrement())
