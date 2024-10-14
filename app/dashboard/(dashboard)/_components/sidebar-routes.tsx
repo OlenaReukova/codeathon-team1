@@ -8,8 +8,8 @@ import {
   UserCog,
   Building2,
   ShieldQuestion,
-} from "lucide-react";
-import { usePathname } from "next/navigation";
+} from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 import { SidebarItem } from './sidebar-item';
 
@@ -21,38 +21,33 @@ const guestRoutes = [
   },
   {
     icon: Building2,
-    label: "Verified Companies",
-    href: "/dashboard/verified-companies",
+    label: 'Verified Companies',
+    href: '/dashboard/verified-companies',
   },
   {
     icon: Compass,
-    label: "Browse",
-    href: "/dashboard/search",
+    label: 'Browse',
+    href: '/dashboard/search',
   },
 ];
 
 const adminRoutes = [
   {
     icon: List,
-    label: "Campaigns",
-    href: "/dashboard/admin/campaigns",
+    label: 'Campaigns',
+    href: '/dashboard/admin/campaigns',
   },
   {
     icon: ShieldQuestion,
-    label: "UnVerified Companies",
-    href: "/dashboard/admin/unverified-companies",
-  },
-  {
-    icon: UserCog,
-    label: "Manage Roles",
-    href: "/dashboard/admin/roles",
+    label: 'UnVerified Companies',
+    href: '/dashboard/admin/unverified-companies',
   },
 ];
 
 export const SidebarRoutes = () => {
   const pathname = usePathname();
 
-  const isAdminPage = pathname?.includes("/dashboard/admin");
+  const isAdminPage = pathname?.includes('/dashboard/admin');
 
   const routes = isAdminPage ? adminRoutes : guestRoutes;
 
