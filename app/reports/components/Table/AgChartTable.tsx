@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef, ICellRendererParams } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -18,11 +18,6 @@ interface IReport {
   category: string;
 }
 
-interface CellRendererProps extends ICellRendererParams {
-  value: string;
-}
-
-// Mock data for local testing
 const mockData: IReport[] = [
   {
     id: '1',
@@ -178,12 +173,7 @@ const mockData: IReport[] = [
 
 const AgChartTable: React.FC = () => {
   const gridRef = useRef<AgGridReact<IReport>>(null);
-  const [rowData, setRowData] = useState<IReport[]>([]);
-
-  // Mock data for testing
-  useEffect(() => {
-    setRowData(mockData);
-  }, []);
+  const [rowData, setRowData] = useState<IReport[]>(mockData);
 
   const defaultColDef = useMemo<ColDef>(
     () => ({
@@ -195,102 +185,85 @@ const AgChartTable: React.FC = () => {
     []
   );
 
-  const [columnDefs] = useState<ColDef<IReport>[]>([
-    {
-      headerName: 'Campaign',
-      field: 'campaign',
-      filter: 'agTextColumnFilter',
-      flex: 2,
-    },
-    {
-      headerName: 'Donor Name',
-      field: 'donor',
-      filter: 'agSetColumnFilter',
-      cellRenderer: (params: ICellRendererParams) => <>{params.value}</>,
-      flex: 1,
-    },
-    {
-      headerName: 'Donor Type',
-      field: 'donorType',
-      filter: 'agSetColumnFilter',
-      filterParams: {
-        values: ['Company', 'Individual'],
+  const columnDefs = useMemo<ColDef<IReport>[]>(
+    () => [
+      {
+        headerName: 'Campaign',
+        field: 'campaign',
+        filter: 'agTextColumnFilter',
+        flex: 2,
       },
-      flex: 1,
-    },
-    {
-      headerName: 'Amount',
-      field: 'amount',
-      filter: 'agNumberColumnFilter',
-      flex: 1,
-    },
-    {
-      headerName: 'Date',
-      field: 'date',
-      filter: 'agDateColumnFilter',
-      flex: 1,
-    },
-    {
-      headerName: 'Type',
-      field: 'type',
-      filter: 'agTextColumnFilter',
-      flex: 1,
-    },
-    {
-      headerName: 'Category',
-      field: 'category',
-      filter: 'agTextColumnFilter',
-      flex: 1,
-    },
-  ]);
+      {
+        headerName: 'Donor Name',
+        field: 'donor',
+        filter: 'agSetColumnFilter',
+        cellRenderer: ({ value }: ICellRendererParams) => <>{value}</>,
+        flex: 1,
+      },
+      {
+        headerName: 'Donor Type',
+        field: 'donorType',
+        filter: 'agSetColumnFilter',
+        filterParams: { values: ['Company', 'Individual'] },
+        flex: 1,
+      },
+      {
+        headerName: 'Amount',
+        field: 'amount',
+        filter: 'agNumberColumnFilter',
+        flex: 1,
+      },
+      {
+        headerName: 'Date',
+        field: 'date',
+        filter: 'agDateColumnFilter',
+        flex: 1,
+      },
+      {
+        headerName: 'Type',
+        field: 'type',
+        filter: 'agTextColumnFilter',
+        flex: 1,
+      },
+      {
+        headerName: 'Category',
+        field: 'category',
+        filter: 'agTextColumnFilter',
+        flex: 1,
+      },
+    ],
+    []
+  );
 
-  const onChartClick = () => {
+  const createRangeChart = () => {
     if (gridRef.current) {
       const gridApi = gridRef.current.api;
+
       gridApi.createRangeChart({
         chartType: 'column',
         cellRange: {
           columns: ['campaign', 'amount'],
         },
-        chartOptions: {
-          title: {
-            text: 'Donation Amount by Campaign',
-          },
-          series: [
-            {
-              xKey: 'campaign',
-              yKey: 'amount',
-              yName: 'Amount',
+        suppressChartRanges: true,
+        chartThemeOverrides: {
+          common: {
+            title: {
+              text: 'Donation Amount by Campaign',
+              enabled: true,
             },
-          ],
+          },
         },
       });
     }
   };
-
   return (
     <div>
-      <button
-        onClick={onChartClick}
-        style={{
-          marginBottom: '10px',
-          color: 'rgb(3, 105, 161)',
-          backgroundColor: 'white',
-          border: '1px solid rgb(3, 105, 161)',
-          borderRadius: '8px',
-          padding: '10px 20px',
-          cursor: 'pointer',
-          transition: 'background-color 0.3s, color 0.3s',
-        }}>
+      <button onClick={createRangeChart} className='generate-chart-button'>
         Generate Chart
       </button>
       <div
         className='ag-theme-alpine'
-        style={{
-          height: '600px',
-          width: '100%',
-          backgroundColor: 'rgb(241, 250, 254)',
-        }}>
+        style={{ height: '600px', width: '100%' }}>
         <AgGridReact<IReport>
           ref={gridRef}
           rowData={rowData}
@@ -300,6 +273,22 @@ const AgChartTable: React.FC = () => {
           enableCharts={true}
         />
       </div>
+      <style jsx>{`
+        .generate-chart-button {
+          margin-bottom: 10px;
+          color: rgb(3, 105, 161);
+          background-color: white;
+          border: 1px solid rgb(3, 105, 161);
+          border-radius: 8px;
+          padding: 10px 20px;
+          cursor: pointer;
+          transition: background-color 0.3s, color 0.3s;
+        }
+        .generate-chart-button:hover {
+          background-color: rgb(3, 105, 161);
+          color: white;
+        }
+      `}</style>
     </div>
   );
 };
