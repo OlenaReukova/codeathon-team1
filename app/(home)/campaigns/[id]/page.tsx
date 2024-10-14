@@ -1,46 +1,68 @@
-"use client";
+'use client';
 
-import { useParams, useRouter } from "next/navigation";
-import { useMemo, useState, useCallback, useEffect } from "react";
-import ReactHtmlParser from "react-html-parser";
+import { useParams, useRouter } from 'next/navigation';
+import { useMemo, useState, useCallback, useEffect } from 'react';
+import parse from 'html-react-parser';
+import Spinner from '../../_components/spinner';
 
 import {
   FaFacebookF,
   FaLinkedinIn,
   FaWhatsapp,
   FaEnvelope,
-} from "react-icons/fa";
-import { FiLink } from "react-icons/fi";
-import { TbBrandX } from "react-icons/tb";
+} from 'react-icons/fa';
+import { FiLink } from 'react-icons/fi';
+import { TbBrandX } from 'react-icons/tb';
+
+interface Category {
+  name: string;
+}
 
 interface Campaign {
   id: string;
-  name: string;
+  title: string;
   description: string;
-  image: string;
-  category: string;
+  imageUrl: string;
+  category: Category;
 }
 
-export default function CampaignDetails() {
-  const { id } = useParams();
+const CampaignDetails: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const [isReadMore, setIsReadMore] = useState(false);
-  const [donationType, setDonationType] = useState<string | null>(null);
-  const [data, setData] = useState(null);
+  const [isReadMore, setIsReadMore] = useState<boolean>(false);
+  const [donationType, setDonationType] = useState<
+    'individual' | 'company' | null
+  >(null);
+  const [data, setData] = useState<Campaign | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetch(`/api/campaigns/${id}`)
-      .then((res) => res.json())
-      .then(setData);
+    const fetchCampaignData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/campaigns/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch campaign data');
+        }
+        const campaignData: Campaign = await response.json();
+        setData(campaignData);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCampaignData();
   }, [id]);
 
-  const campaign = useMemo(() => data, [data]);
+  const campaign = useMemo(() => data as Campaign, [data]);
 
   const handleCopyLink = useCallback(() => {
     navigator.clipboard
       .writeText(window.location.href)
-      .then(() => alert("Link copied!"))
-      .catch((error) => console.error("Error copying link:", error));
+      .then(() => alert('Link copied!'))
+      .catch((error) => console.error('Error copying link:', error));
   }, []);
 
   const toggleReadMore = useCallback(() => {
@@ -50,25 +72,27 @@ export default function CampaignDetails() {
   const handleDonateNow = useCallback(() => {
     if (donationType) {
       router.push(
-        `/campaigns/${id}/${
-          donationType === "individual"
-            ? `donate-as-individual?campaignName=${encodeURIComponent(
-                campaign?.title
-              )}`
-            : `donate-as-company?campaignName=${encodeURIComponent(
-                campaign?.title
-              )}`
-        }`
+        `/campaigns/${id}/donate-as-${donationType}?campaignName=${encodeURIComponent(
+          campaign?.title
+        )}`
       );
     } else {
-      alert("Please select a donation type.");
+      alert('Please select a donation type.');
     }
   }, [donationType, id, campaign?.title, router]);
 
+  if (loading) {
+    return (
+      <div className='m-6 p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg border border-slate-100 text-center'>
+        <Spinner />
+      </div>
+    );
+  }
+
   if (!data) {
     return (
-      <div className="m-6 p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md border-solid border-slate-100 border-2">
-        <h1 className="text-2xl font-semibold text-gray-800">
+      <div className='m-6 p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg border border-slate-100'>
+        <h1 className='text-2xl font-semibold text-gray-800'>
           Campaign Not Found
         </h1>
       </div>
@@ -76,154 +100,144 @@ export default function CampaignDetails() {
   }
 
   return (
-    <div className="m-6 p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md border-solid border-slate-100 border-2">
-      <header className="flex flex-col items-start mb-6">
-        <h1 className="text-4xl font-extrabold text-gray-900">
-          {campaign?.title}
+    <div className='m-6 p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg border border-slate-100'>
+      <header className='flex flex-col items-start mb-6'>
+        <h1 className='text-4xl font-extrabold text-gray-900'>
+          {campaign.title}
         </h1>
-        <p className="text-lg text-gray-600 mt-1">{campaign?.category?.name}</p>
+        <p className='text-lg text-gray-600 mt-1'>{campaign.category.name}</p>
       </header>
 
-      <section className="mb-6">
+      <section className='mb-6'>
         <img
-          src={campaign?.imageUrl}
+          src={campaign.imageUrl}
           alt={campaign.title}
-          className="w-full h-80 object-cover rounded-lg shadow-lg"
+          className='w-full h-80 object-cover rounded-lg shadow-lg'
         />
-        <p className="mt-4 text-gray-800 leading-relaxed">
+        <p className='mt-4 text-gray-800 leading-relaxed'>
           {isReadMore
-            ? ReactHtmlParser(campaign?.description)
-            : ReactHtmlParser(
-                `${campaign?.description.toString().slice(0, 200)}...`
-              )}
+            ? parse(campaign.description)
+            : parse(`${campaign.description.slice(0, 200)}...`)}
           <button
             onClick={toggleReadMore}
-            className="text-blue-500 hover:underline ml-1"
-          >
-            {isReadMore ? "Read Less" : "Read More"}
+            className='text-blue-500 hover:underline ml-1 transition-colors duration-200'>
+            {isReadMore ? 'Read Less' : 'Read More'}
           </button>
         </p>
       </section>
 
-      <section className="mt-6">
-        <div className="flex justify-between items-center">
-          <p className="text-xl font-semibold text-gray-900">
+      <section className='mt-6'>
+        <div className='flex justify-between items-center mb-4'>
+          <p className='text-xl font-semibold text-gray-900'>
             Share this campaign:
           </p>
-          <div className="flex flex-wrap gap-4">
-            <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          <div className='flex flex-wrap gap-4'>
+            <ShareButton
+              platform='X'
+              url={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
                 `Check out this campaign: ${campaign.title}`
               )}&url=${encodeURIComponent(window.location.href)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Share on X"
-              className="text-[#1DA1F2] hover:text-[#1a8cd8] text-xl"
-            >
-              <TbBrandX />
-            </a>
-
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+              icon={<TbBrandX />}
+            />
+            <ShareButton
+              platform='Facebook'
+              url={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                 window.location.href
               )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Share on Facebook"
-              className="text-[#4267B2] hover:text-[#3b5998] text-xl"
-            >
-              <FaFacebookF />
-            </a>
-
-            <a
-              href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+              icon={<FaFacebookF />}
+            />
+            <ShareButton
+              platform='LinkedIn'
+              url={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
                 window.location.href
               )}&title=${encodeURIComponent(
                 campaign.title
               )}&summary=${encodeURIComponent(
                 campaign.description
               )}&source=LinkedIn`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Share on LinkedIn"
-              className="text-[#0077B5] hover:text-[#006699] text-xl"
-            >
-              <FaLinkedinIn />
-            </a>
-
-            <a
-              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+              icon={<FaLinkedinIn />}
+            />
+            <ShareButton
+              platform='WhatsApp'
+              url={`https://api.whatsapp.com/send?text=${encodeURIComponent(
                 `Check out this campaign: ${campaign.title} ${window.location.href}`
               )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Share on WhatsApp"
-              className="text-[#25D366] hover:text-[#25a256] text-xl"
-            >
-              <FaWhatsapp />
-            </a>
-
-            <a
-              href={`mailto:?subject=${encodeURIComponent(
+              icon={<FaWhatsapp />}
+            />
+            <ShareButton
+              platform='Email'
+              url={`mailto:?subject=${encodeURIComponent(
                 `Check out this campaign: ${campaign.title}`
               )}&body=${encodeURIComponent(
                 `I found this campaign and thought you might be interested in it: ${window.location.href}`
               )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Share via Email"
-              className="text-[#EA4335] hover:text-[#d73d32] text-xl"
-            >
-              <FaEnvelope />
-            </a>
-
+              icon={<FaEnvelope />}
+            />
             <button
-              type="button"
+              type='button'
               onClick={handleCopyLink}
-              aria-label="Copy Link"
-              className="text-[#37AB87] hover:text-[#2e8c6c] text-xl"
-            >
+              aria-label='Copy Link'
+              className='text-[#37AB87] hover:text-[#2e8c6c] text-xl transition-colors duration-200'>
               <FiLink />
             </button>
           </div>
         </div>
       </section>
 
-      <section className="mt-6">
-        <p className="text-xl font-semibold text-gray-900 mb-4">
+      <section className='mt-6'>
+        <p className='text-xl font-semibold text-gray-900 mb-4'>
           Select Donation Type
         </p>
-        <div className="flex flex-col space-y-3 mb-6">
-          {["individual", "company"].map((type) => (
+        <div className='flex flex-col space-y-3 mb-6'>
+          {['individual', 'company'].map((type) => (
             <label
               key={type}
-              className="flex items-center space-x-3 cursor-pointer"
-            >
+              className='flex items-center space-x-3 cursor-pointer'>
               <input
-                type="radio"
-                name="donation-type"
+                type='radio'
+                name='donation-type'
                 value={type}
                 checked={donationType === type}
-                onChange={(e) => setDonationType(e.target.value)}
-                className="h-5 w-5 text-blue-500 border-gray-300 rounded"
-                aria-checked={donationType === type ? "true" : "false"}
+                onChange={() =>
+                  setDonationType(type as 'individual' | 'company')
+                }
+                className='h-5 w-5 text-[#37AB87] border-gray-300 rounded focus:ring-[#37AB87] transition-colors duration-200'
+                aria-checked={donationType === type ? 'true' : 'false'}
               />
-              <span className="text-gray-800 text-lg">
+              <span className='text-gray-800 text-lg'>
                 Donate as {type.charAt(0).toUpperCase() + type.slice(1)}
               </span>
             </label>
           ))}
         </div>
-        <div className="mt-4 text-center">
+        <div className='mt-4 text-center'>
           <button
-            type="button"
+            type='button'
             onClick={handleDonateNow}
-            className="bg-[#059669] hover:bg-[#037f57] text-white text-sm py-2 px-5 w-36 mx-auto rounded-full"
-          >
+            className='bg-[#059669] hover:bg-[#037f57] text-white text-sm py-2 px-5 w-36 mx-auto rounded-full transition-all duration-200'>
             Donate Now
           </button>
         </div>
       </section>
     </div>
   );
+};
+
+interface ShareButtonProps {
+  platform: string;
+  url: string;
+  icon: React.ReactNode;
 }
+
+const ShareButton: React.FC<ShareButtonProps> = ({ platform, url, icon }) => (
+  <a
+    href={url}
+    target='_blank'
+    rel='noopener noreferrer'
+    className='flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-200'
+    aria-label={`Share on ${platform}`}>
+    {icon}
+  </a>
+);
+
+export default CampaignDetails;
