@@ -1,60 +1,68 @@
-"use client"; // This makes the component a Client Component
+'use client';
 
-import { Button } from "@/components/ui/button"; // Assuming you have a Button component
-import { useState } from "react";
-import { useRouter } from "next/navigation"; // Correct import for Next.js 13+
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-// Define columns with a button for pending status
+interface CompanyRow {
+  id: string;
+  companyName: string;
+  companyAddress: string;
+  contactPerson: string;
+  contactEmail: string;
+  status: string;
+}
+
 export const columns = [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: 'id',
+    header: 'ID',
   },
   {
-    accessorKey: "companyName",
-    header: "Company Name",
+    accessorKey: 'companyName',
+    header: 'Company Name',
   },
   {
-    accessorKey: "companyAddress",
-    header: "Company Address",
+    accessorKey: 'companyAddress',
+    header: 'Company Address',
   },
   {
-    accessorKey: "contactPerson",
-    header: "Contact Person",
+    accessorKey: 'contactPerson',
+    header: 'Contact Person',
   },
   {
-    accessorKey: "contactEmail",
-    header: "Contact Email",
+    accessorKey: 'contactEmail',
+    header: 'Contact Email',
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }: { row: { original: CompanyRow } }) => {
       const { id, status } = row.original;
       const [loading, setLoading] = useState(false);
-      const router = useRouter(); // This is now the correct hook for routing/navigation in Next.js 13+
+      const router = useRouter();
 
       const handleVerify = async () => {
         setLoading(true);
         try {
           await fetch(`/api/verify-company/${id}`, {
-            method: "POST",
+            method: 'POST',
           });
-          // Reload the page or refetch the data
-          router.refresh(); // Use router.refresh() to reload the data in Next.js 13+
+
+          router.refresh();
         } catch (error) {
-          console.error("Error verifying company:", error);
+          console.error('Error verifying company:', error);
         } finally {
           setLoading(false);
         }
       };
 
-      return status === "pending" ? (
+      return status === 'pending' ? (
         <Button onClick={handleVerify} disabled={loading}>
-          {loading ? "Verifying..." : "Verify"}
+          {loading ? 'Verifying...' : 'Verify'}
         </Button>
       ) : (
-        "Verified"
+        'Verified'
       );
     },
   },
