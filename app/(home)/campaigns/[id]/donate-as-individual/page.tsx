@@ -1,39 +1,39 @@
 "use client";
 import { useState, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { FaPaypal } from "react-icons/fa";
 
 export default function DonateAsIndividual() {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [donorType, setDonorType] = useState<string>("anonymous");
-  const [isRecurring, setIsRecurring] = useState<boolean>(false);
   const [agreed, setAgreed] = useState<boolean>(false);
+  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(false);
+
   const searchParams = useSearchParams();
-  const router = useRouter();
   const campaignName = searchParams.get("campaignName") || "";
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (agreed) {
-        // Redirect to PayPal
-        window.location.href = `https://www.paypal.com/donate?business=your-paypal-business-email&amount=${
-          isRecurring ? "RECURRING" : "ONCE"
-        }`; // Replace with actual PayPal donation URL
+        window.location.href = `https://sandbox.paypal.com/cgi-bin/webscr?cmd=_donations&business=sb-iqpee31411926@business.example.com&
+      }`;
       } else {
         alert("You must agree to the disclaimer.");
       }
     },
-    [agreed, isRecurring]
+    [agreed]
   );
+
+  const toggleDisclaimer = () => setShowDisclaimer((prev) => !prev);
 
   return (
     <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow-md">
       <h1 className="text-2xl font-semibold text-gray-900 mb-4">
         Donate as Individual
       </h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="campaignName" className="block text-gray-700">
             Campaign Name
@@ -43,7 +43,7 @@ export default function DonateAsIndividual() {
             id="campaignName"
             value={campaignName}
             readOnly
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100"
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm bg-gray-100"
             aria-live="polite"
           />
         </div>
@@ -59,8 +59,13 @@ export default function DonateAsIndividual() {
               checked={donorType === "anonymous"}
               onChange={() => setDonorType("anonymous")}
               className="form-radio h-5 w-5 text-blue-600 border-gray-300 rounded"
+              aria-labelledby="anonymousLabel"
             />
-            <label htmlFor="anonymous" className="ml-2 text-gray-700">
+            <label
+              id="anonymousLabel"
+              htmlFor="anonymous"
+              className="ml-2 text-gray-700"
+            >
               Donate Anonymously
             </label>
           </div>
@@ -73,8 +78,13 @@ export default function DonateAsIndividual() {
               checked={donorType === "provideDetails"}
               onChange={() => setDonorType("provideDetails")}
               className="form-radio h-5 w-5 text-blue-600 border-gray-300 rounded"
+              aria-labelledby="provideDetailsLabel"
             />
-            <label htmlFor="provideDetails" className="ml-2 text-gray-700">
+            <label
+              id="provideDetailsLabel"
+              htmlFor="provideDetails"
+              className="ml-2 text-gray-700"
+            >
               Provide Name and Email
             </label>
           </div>
@@ -84,7 +94,7 @@ export default function DonateAsIndividual() {
           <>
             <div>
               <label htmlFor="email" className="block text-gray-700">
-                Email Address
+                Email Address <span className="text-red-600">*</span>
               </label>
               <input
                 type="email"
@@ -92,13 +102,13 @@ export default function DonateAsIndividual() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
                 placeholder="Enter your email address"
               />
             </div>
             <div>
               <label htmlFor="name" className="block text-gray-700">
-                Full Name
+                Full Name <span className="text-red-600">*</span>
               </label>
               <input
                 type="text"
@@ -106,52 +116,60 @@ export default function DonateAsIndividual() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
                 placeholder="Enter your full name"
               />
             </div>
           </>
         )}
 
-        <div>
-          <label className="inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={isRecurring}
-              onChange={() => setIsRecurring((prev) => !prev)}
-              className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded"
-            />
-            <span className="ml-2 text-gray-700">
-              Make this a recurring donation
-            </span>
-          </label>
-        </div>
-
-        <div>
-          <label className="inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={() => setAgreed((prev) => !prev)}
-              required
-              className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded"
-            />
-            <span className="ml-2 text-gray-700">
-              I agree to the{" "}
-              <a href="/disclaimer" className="text-blue-500 hover:underline">
-                disclaimer
-              </a>
-            </span>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={() => setAgreed((prev) => !prev)}
+            required
+            className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded"
+            id="agreement"
+          />
+          <label htmlFor="agreement" className="ml-2 text-gray-700">
+            I agree to the{" "}
+            <button
+              type="button"
+              onClick={toggleDisclaimer}
+              className="text-blue-500 hover:underline"
+            >
+              disclaimer
+            </button>
           </label>
         </div>
 
         <button
           type="submit"
-          className="bg-[#059669] hover:bg-[#037f57] text-white text-sm py-2 px-5 w-full rounded-full flex items-center justify-center"
+          className="bg-[#059669] hover:bg-[#037f57] text-white text-sm py-2 px-5 w-full rounded-full flex items-center justify-center transition duration-200 ease-in-out"
         >
           Donate Now <FaPaypal className="ml-2 text-xl" />
         </button>
       </form>
+
+      {showDisclaimer && (
+        <div className="mt-4 p-4 bg-gray-100 border rounded-md">
+          <h2 className="font-semibold">Disclaimer</h2>
+          <p className="mt-2 text-gray-600">
+            Your donations support the specified campaign and help make a
+            difference. By agreeing, you consent to share your data with the
+            campaign organizers for processing your donation and communicating
+            future updates. Please ensure that you agree with these terms before
+            proceeding.
+          </p>
+          <button
+            onClick={toggleDisclaimer}
+            className="mt-2 text-blue-500 hover:underline"
+          >
+            Close
+          </button>
+        </div>
+      )}
     </div>
   );
 }

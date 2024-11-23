@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useOrganization } from '@clerk/nextjs';
-import { DataTable } from './_components/data-table';
-import { columns } from './_components/columns';
+import { useOrganization } from "@clerk/nextjs";
+import { DataTable } from "./_components/data-table";
+import { columns } from "./_components/columns";
 
 const InvitationList = () => {
   const OrgInvitationsParams = {
@@ -33,7 +33,7 @@ const InvitationList = () => {
   });
 
   return (
-    <div className='p-6'>
+    <div className="p-6">
       <DataTable columns={columns} data={invitedUsers!} />
     </div>
   );

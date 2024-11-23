@@ -1,12 +1,12 @@
-import { auth } from '@clerk/nextjs';
-import { redirect } from 'next/navigation';
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
-import { DataTable } from './_components/data-table';
-import { columns } from './_components/columns';
-import { db } from '@/lib/db';
+import { DataTable } from "./_components/data-table";
+import { columns } from "./_components/columns";
+import { db } from "@/lib/db";
 
 interface CompanyRow {
-  id: string;
+  id: string; 
   companyName: string;
   companyAddress: string;
   contactPerson: string;
@@ -18,15 +18,16 @@ const CompaniesPage = async () => {
   const { userId } = auth();
 
   if (!userId) {
-    return redirect('/');
+    return redirect("/");
   }
 
   const companies = await db.company.findMany({
-    where: { status: 'pending' },
+    where: { status: "pending" },
     orderBy: {
-      id: 'desc',
+      id: "desc",
     },
   });
+
 
   const formattedCompanies: CompanyRow[] = companies.map((company) => ({
     id: String(company.id),
@@ -38,7 +39,7 @@ const CompaniesPage = async () => {
   }));
 
   return (
-    <div className='p-6'>
+    <div className="p-6">
       <DataTable columns={columns} data={formattedCompanies} />
     </div>
   );

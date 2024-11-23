@@ -1,6 +1,6 @@
-'use client';
+"use client"; 
 
-import * as React from 'react';
+import * as React from "react";
 import {
   ColumnDef,
   SortingState,
@@ -9,7 +9,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table";
 
 import {
   Table,
@@ -18,7 +18,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
+
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,9 +45,9 @@ export function DataTable<TData, TValue>({
   });
 
   React.useEffect(() => {
-    console.log('Table object:', table);
+    console.log("Table object:", table);
     if (table) {
-      console.log('Table header groups:', table.getHeaderGroups());
+      console.log("Table header groups:", table.getHeaderGroups());
     }
   }, [table]);
 
@@ -54,7 +55,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className='rounded-md border'>
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {headerGroups.length > 0 ? (
@@ -74,7 +75,7 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableHead colSpan={columns.length} className='text-center'>
+                <TableHead colSpan={columns.length} className="text-center">
                   No headers available.
                 </TableHead>
               </TableRow>
@@ -96,7 +97,7 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className='text-center'>
+                <TableCell colSpan={columns.length} className="text-center">
                   No results.
                 </TableCell>
               </TableRow>

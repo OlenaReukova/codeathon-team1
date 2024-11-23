@@ -43,12 +43,10 @@ export default function DonorRegistration() {
         },
         body: JSON.stringify(data),
       });
-      console.log(response);
       const result = await response.json();
       if (response.ok) {
         alert("Thank you! The Admin will verify your registration shortly.");
         form.reset();
-        console.log("Form submitted:", result);
       } else if (response.status === 400) {
         alert(
           "The company is either already registered or pending verification."

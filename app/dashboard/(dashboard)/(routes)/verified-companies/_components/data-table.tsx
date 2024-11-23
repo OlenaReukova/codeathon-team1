@@ -1,4 +1,4 @@
-"use client"; // Ensure this is at the top of the file
+"use client"; 
 
 import * as React from "react";
 import {
@@ -19,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

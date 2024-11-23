@@ -1,11 +1,12 @@
-import { auth } from '@clerk/nextjs';
-import { NextResponse } from 'next/server';
+import { auth } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
 
-import { db } from '@/lib/db';
+import { db } from "@/lib/db";
+ 
 
 export async function GET(
   req: Request,
-  { params }: { params: { campaignId: string } }
+  { params } : { params: { campaignId: string; } }
 ) {
   try {
     const campaign = await db.campaign.findUnique({
@@ -13,65 +14,68 @@ export async function GET(
         id: params.campaignId,
       },
       include: {
-        category: true,
-      },
+        category: true
+      }
     });
 
     return NextResponse.json(campaign);
   } catch (error) {
-    console.log('[CAMPAIGN_ID]', error);
-    return new NextResponse('Internal Error', { status: 500 });
+    console.log("[CAMPAIGN_ID]", error);
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { campaignId: string } }
+  { params }: { params: { campaignId: string; } }
 ) {
   try {
-    const { userId } = auth();
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+      const { userId } = auth();
+      if(!userId) {
+        return new NextResponse("Unauthorized", { status: 401 });
+      }
 
-    const campaign = await db.campaign.findUnique({
-      where: {
-        id: params.campaignId,
-      },
-    });
+      const campaign = await db.campaign.findUnique({
+        where: {
+          id: params.campaignId,
+        }
+      });
 
-    if (!campaign) {
-      return new NextResponse('Not Found', { status: 404 });
-    }
+      if (!campaign) {
+        return new NextResponse("Not Found", { status: 404 });
+      }
 
-    const deletedCampaign = await db.campaign.delete({
-      where: {
-        id: params.campaignId,
-      },
-    });
 
-    return NextResponse.json(deletedCampaign);
-  } catch (error) {
-    console.log('[CHAMPAIGN_ID_DELETE]', error);
-    return new NextResponse('Internal Error', { status: 500 });
-  }
+      const deletedCampaign = await db.campaign.delete({
+        where: {
+          id: params.campaignId
+        }
+      });
+      
+      return NextResponse.json(deletedCampaign);
+} catch (error) {
+  console.log("[CHAMPAIGN_ID_DELETE]", error);
+  return new NextResponse("Internal Error", { status: 500 });
+}
+
 }
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { campaignId: string } }
+  { params } : { params: { campaignId: string; } }
 ) {
   try {
     const { userId } = auth();
-    const { isPublished, ...values } = await req.json();
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
+    const {isPublished, ...values} = await req.json();
+  
+    if(!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    return new NextResponse();
+
+    return new NextResponse
   } catch (error) {
-    console.log('[CAMPAIGN_ID]', error);
-    return new NextResponse('Internal Error', { status: 500 });
+    console.log("[CAMPAIGN_ID]", error);
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }

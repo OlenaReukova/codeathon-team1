@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import * as z from 'zod';
-import { useAuth, useOrganization } from '@clerk/nextjs';
-import { OrganizationCustomRoleKey } from '@clerk/types';
-import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import toast from 'react-hot-toast';
-import { isClerkAPIResponseError } from '@clerk/nextjs';
+import * as z from "zod";
+import { useAuth, useOrganization } from "@clerk/nextjs";
+import { OrganizationCustomRoleKey } from "@clerk/types";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
+import { isClerkAPIResponseError } from "@clerk/nextjs";
 import {
   Form,
   FormControl,
@@ -14,41 +14,41 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useRouter } from 'next/navigation';
+} from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
 const validRoles = [
-  'org:super_admin',
-  'org:admin',
-  'org:member',
-  'admin',
-  'basic_member',
-  'guest_member',
+  "org:super_admin",
+  "org:admin",
+  "org:member",
+  "admin",
+  "basic_member",
+  "guest_member",
 ] as const;
 
 interface InviteMemberProps {
   email?: string;
-  role?: OrganizationCustomRoleKey | undefined;
+  role?: OrganizationCustomRoleKey | undefined; // Allow undefined here
 }
 
 const formSchema = z.object({
   email: z
     .string()
-    .min(1, { message: 'Email is required' })
-    .email('This is not a valid email.')
+    .min(1, { message: "Email is required" })
+    .email("This is not a valid email.")
     .trim(),
   role: z.enum(validRoles, {
-    required_error: 'Please select a role to display.',
+    required_error: "Please select a role to display.",
   }),
 });
 
@@ -73,8 +73,8 @@ const InviteMember = ({ email, role }: InviteMemberProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: email || '',
-      role: role || undefined,
+      email: email || "",
+      role: role || undefined, // Set to undefined if falsy
     },
   });
 
@@ -90,8 +90,8 @@ const InviteMember = ({ email, role }: InviteMemberProps) => {
         emailAddress: values.email,
         role: values.role,
       });
-      toast.success('Please check your email to accept the invitation');
-      router.push('/dashboard/admin/invitations');
+      toast.success("Please check your email to accept the invitation");
+      router.push("/dashboard/admin/invitations");
     } catch (err: any) {
       if (isClerkAPIResponseError(err)) toast.error(err.errors[0].message);
     }
@@ -100,23 +100,24 @@ const InviteMember = ({ email, role }: InviteMemberProps) => {
   if (fetchedRoles.length === 0) return null;
 
   return (
-    <div className='max-w-5xl mx-auto flex md:items-center md:justify-left h-full p-6'>
+    <div className="max-w-5xl mx-auto flex md:items-center md:justify-left h-full p-6">
       <div>
-        <h1 className='text-2xl'>Invite member</h1>
+        <h1 className="text-2xl">Invite member</h1>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className='space-y-8 mt-8'>
+            className="space-y-8 mt-8"
+          >
             <FormField
               control={form.control}
-              name='email'
+              name="email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
                       disabled
-                      placeholder='johndoe@gmail.com'
+                      placeholder="johndoe@gmail.com"
                       {...field}
                     />
                   </FormControl>
@@ -127,16 +128,17 @@ const InviteMember = ({ email, role }: InviteMemberProps) => {
 
             <FormField
               control={form.control}
-              name='role'
+              name="role"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Role</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}>
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder='Select role' />
+                        <SelectValue placeholder="Select role" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -145,14 +147,15 @@ const InviteMember = ({ email, role }: InviteMemberProps) => {
                           key={roleKey}
                           value={roleKey}
                           disabled={
-                            orgRole === 'org:admin' &&
-                            roleKey.includes('org:super_admin')
-                          }>
-                          {roleKey === 'org:admin'
-                            ? 'Admin'
-                            : roleKey === 'org:member'
-                            ? 'Member'
-                            : 'Super admin'}
+                            orgRole === "org:admin" &&
+                            roleKey.includes("org:super_admin")
+                          }
+                        >
+                          {roleKey === "org:admin"
+                            ? "Admin"
+                            : roleKey === "org:member"
+                            ? "Member"
+                            : "Super admin"}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -161,7 +164,7 @@ const InviteMember = ({ email, role }: InviteMemberProps) => {
                 </FormItem>
               )}
             />
-            <Button type='submit' disabled={!isValid || isSubmitting}>
+            <Button type="submit" disabled={!isValid || isSubmitting}>
               Invite
             </Button>
           </form>

@@ -39,7 +39,6 @@ const CreatePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log(values)
       const response = await axios.post("/api/campaigns", values);
       router.push(`/dashboard/admin/campaigns/${response.data.id}`);
       toast.success("Campaign created");

@@ -6,48 +6,6 @@ import {
 
 const style = {"layout":"horizontal"};
 
-// function createOrder() {
-//   // replace this url with your server
-//   return fetch("https://localhost:3000/api/paypal/create-order", {
-//       method: "POST",
-//       headers: {
-//           "Content-Type": "application/json",
-//       },
-//       // use the "body" param to optionally pass additional order information
-//       // like product ids and quantities
-//       body: JSON.stringify({
-//           cart: [
-//               {
-//                   sku: "etanod01",
-//                   quantity: 1,
-//               },
-//           ],
-//       }),
-//   })
-//       .then((response) => response.json())
-//       .then((order) => {
-//           // Your code here after create the order
-//           return order.id;
-//       });
-// }
-// function onApprove(data: any) {
-//   // replace this url with your server
-//   return fetch("https://localhost:3000/api/paypal/capture-order", {
-//       method: "POST",
-//       headers: {
-//           "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//           orderID: data.orderID,
-//       }),
-//   })
-//       .then((response) => response.json())
-//       .then((orderData) => {
-//           // Your code here after capture the order
-//       });
-// }
-
-// Custom component to wrap the PayPalButtons and show loading spinner
 const ButtonWrapper = () => {
   const [{ isPending }] = usePayPalScriptReducer();
 
@@ -59,8 +17,6 @@ const ButtonWrapper = () => {
               style={{"layout":"vertical","label":"donate"}}
               disabled={false}
               forceReRender={[style]}
-              // createOrder={createOrder}
-              // onApprove={onApprove}
           />
       </>
   );
