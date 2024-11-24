@@ -1,5 +1,9 @@
 # The Big Alliance Donation Website
 
+## This project was built during the Fitch Hackathon for Big Alliance, September 2024, London.
+<img width="1680" alt="Screenshot 2024-11-24 at 01 23 37" src="https://github.com/user-attachments/assets/beb25f16-ce52-48e6-886e-8d25247b24ba">
+
+
 ## Project Description
 The Big Alliance Donation Website helps users donate to various charity campaigns. It supports both individual and company donations, and administrators can manage campaigns and view reports. The site is designed for mobile and desktop, ensuring accessibility and security with multi-factor authentication and PayPal payments.
 
