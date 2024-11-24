@@ -5,8 +5,8 @@ import About from './_components/about';
 const page = () => {
   return (
     <>
-      <Campaign items={[]} />
       <Slider />
+      <Campaign items={[]} />
       <About />
     </>
   );
