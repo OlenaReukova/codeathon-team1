@@ -187,7 +187,7 @@ const Campaigns = ({ items }: CampaignsListProps) => {
               <Button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="flex items-center bg-[none] hover:bg-[none] text-[#059669] hover:text-[#037f57] text-sm py-2 px-5 transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#037f57] focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center bg-[none] hover:bg-[none] text-[#059669] hover:text-[#037f57] text-sm py-2 px-0 transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#037f57] focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg
                   width="15"
@@ -214,7 +214,7 @@ const Campaigns = ({ items }: CampaignsListProps) => {
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
                 disabled={currentPage === totalPages}
-                className="flex items-center bg-[none] hover:bg-[none] text-[#059669] hover:text-[#037f57] text-sm py-2 px-5 transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#037f57] focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center bg-[none] hover:bg-[none] text-[#059669] hover:text-[#037f57] text-sm py-2 px-0 transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#037f57] focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
                 <svg
