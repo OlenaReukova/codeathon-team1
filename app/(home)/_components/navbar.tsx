@@ -45,7 +45,7 @@ const NavBar = () => {
       className={`sticky top-${top} bg-white z-10 w-full border-b md:border-0`}
       style={{ transition: "top ease-in-out 0.3s" }}
     >
-      <div className="items-center px-4 max-w-screen-2xl mx-auto md:flex md:px-8">
+      <div className="items-center px-2  mx-auto md:flex md:px-6">
         {/* Logo and hamburger menu */}
         <div className="flex items-center justify-between py-3 md:py-5 md:block">
           <Link href="/">
