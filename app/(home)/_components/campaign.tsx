@@ -126,7 +126,7 @@ const Campaigns = ({ items }: CampaignsListProps) => {
           People in crisis need your help. Your donation will change lives.
         </p>
       </div>
-      <div className="p-6">
+      <div className="p-6 mt-4">
         <div className="flex flex-col md:flex-row md:justify-between mb-8 space-y-4 md:space-y-0 md:space-x-4">
           <div className="relative flex-1 max-w-xs">
             <input
