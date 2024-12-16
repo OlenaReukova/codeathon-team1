@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { FiLink } from "react-icons/fi";
 import { TbBrandX } from "react-icons/tb";
+import { Button } from "@/components/ui/button";
 
 interface Category {
   name: string;
@@ -100,7 +101,7 @@ const CampaignDetails: React.FC = () => {
   }
 
   return (
-    <div className="m-6 p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg border border-slate-100">
+    <div className="m-6 p-6 max-w-4xl mx-auto bg-white rounded-lg lg:shadow-md lg:border lg: border-slate-100">
       <header className="flex flex-col items-start mb-6">
         <h1 className="text-4xl font-extrabold text-gray-900">
           {campaign.title}
@@ -112,7 +113,7 @@ const CampaignDetails: React.FC = () => {
         <img
           src={campaign.imageUrl}
           alt={campaign.title}
-          className="w-full h-80 object-cover rounded-lg shadow-lg"
+          className="w-full h-80 object-cover lg:rounded-lg lg:shadow-lg"
         />
         <p className="mt-4 text-gray-800 leading-relaxed">
           {isReadMore
@@ -213,14 +214,16 @@ const CampaignDetails: React.FC = () => {
             </label>
           ))}
         </div>
-        <div className="mt-4 text-center">
-          <button
+        <div className="mt-10 mb-6 text-center">
+          <Button
+            variant="success"
+            size="lg"
+            border="rounded"
             type="button"
             onClick={handleDonateNow}
-            className="bg-[#059669] hover:bg-[#037f57] text-white text-sm py-2 px-5 w-36 mx-auto rounded-full transition-all duration-200"
           >
             Donate Now
-          </button>
+          </Button>
         </div>
       </section>
     </div>
