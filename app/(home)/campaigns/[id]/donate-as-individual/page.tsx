@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { FaPaypal } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
 
 export default function DonateAsIndividual() {
   const [email, setEmail] = useState<string>("");
@@ -29,13 +30,16 @@ export default function DonateAsIndividual() {
   const toggleDisclaimer = () => setShowDisclaimer((prev) => !prev);
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow-md">
+    <div className="p-6 max-w-md mx-auto bg-white rounded-lg lg:shadow-md md:shadow-md">
       <h1 className="text-2xl font-semibold text-gray-900 mb-4">
         Donate as Individual
       </h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="campaignName" className="block text-gray-700">
+          <label
+            htmlFor="campaignName"
+            className="block text-gray-700 mt-1 mb-1"
+          >
             Campaign Name
           </label>
           <input
@@ -43,7 +47,7 @@ export default function DonateAsIndividual() {
             id="campaignName"
             value={campaignName}
             readOnly
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm bg-gray-100"
+            className="border p-3 rounded-md w-full text-bg text-[#37AB87]  pl-2 border-[#37AB87] "
             aria-live="polite"
           />
         </div>
@@ -143,13 +147,11 @@ export default function DonateAsIndividual() {
             </button>
           </label>
         </div>
-
-        <button
-          type="submit"
-          className="bg-[#059669] hover:bg-[#037f57] text-white text-sm py-2 px-5 w-full rounded-full flex items-center justify-center transition duration-200 ease-in-out"
-        >
-          Donate Now <FaPaypal className="ml-2 text-xl" />
-        </button>
+        <div className=" text-center p-2 mt-4 mb-4">
+          <Button variant="success" size="lg" border="rounded" type="submit">
+            Donate Now <FaPaypal className="ml-2 text-xl" />
+          </Button>
+        </div>
       </form>
 
       {showDisclaimer && (

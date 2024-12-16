@@ -44,17 +44,17 @@ const CampaignCard = ({
     description.length > 300 ? `${description.slice(0, 300)}...` : description;
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl">
+    <div className="bg-white lg:rounded-lg lg:shadow-lg overflow-hidden transition-transform transform lg:hover:scale-105 lg:hover:shadow-xl">
       <img
         src={imageUrl}
         alt={title}
-        className="w-full h-48 object-cover rounded-t-lg"
+        className="w-full h-80 object-cover lg:rounded-t-lg"
       />
       <div className="p-4 flex flex-col">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
         <p className="text-gray-700 text-sm flex-1">{parse(truncatedBody)}</p>
       </div>
-      <div className="p-4 border-t border-gray-200 text-center">
+      <div className="p-8  border-gray-200 text-center">
         <Link href={`/campaigns/${id}`}>
           <Button variant="success" size="lg">
             Donate now

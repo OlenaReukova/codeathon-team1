@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useCallback } from "react";
 import { FaPaypal } from "react-icons/fa";
@@ -25,7 +26,6 @@ export default function DonateAsCompany() {
       }
 
       if (agreed) {
-
         window.location.href = `https://sandbox.paypal.com/cgi-bin/webscr?cmd=_donations&business=sb-iqpee31411926@business.example.com&item_name=${encodeURIComponent(
           campaignName
         )}`;
@@ -39,13 +39,16 @@ export default function DonateAsCompany() {
   const toggleDisclaimer = () => setShowDisclaimer((prev) => !prev);
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow-md">
+    <div className="p-6 max-w-md mx-auto bg-white lg:rounded-lg lg:shadow-md">
       <h1 className="text-2xl font-semibold text-gray-900 mb-4">
         Donate as Company
       </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="campaignName" className="block text-gray-700">
+          <label
+            htmlFor="campaignName"
+            className="block text-gray-700 mt-1 mb-1"
+          >
             Campaign Name
           </label>
           <input
@@ -53,13 +56,16 @@ export default function DonateAsCompany() {
             id="campaignName"
             value={campaignName}
             readOnly
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed"
+            className="border p-3 rounded-md w-full text-bg text-[#37AB87]  pl-2 border-[#37AB87] "
             aria-live="polite"
           />
         </div>
 
         <div>
-          <label htmlFor="companyName" className="block text-gray-700">
+          <label
+            htmlFor="companyName"
+            className="block text-gray-700 mt-1 mb-1"
+          >
             Company Name
           </label>
           <select
@@ -70,7 +76,7 @@ export default function DonateAsCompany() {
               setCompanyName(value);
               if (value !== "Other") setNewCompanyName("");
             }}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            className="border p-3 rounded-md w-full text-bg text-[#37AB87]  pl-2 border-[#37AB87] "
             required
           >
             <option value="" disabled>
@@ -86,7 +92,10 @@ export default function DonateAsCompany() {
 
           {companyName === "Other" && (
             <div className="mt-2">
-              <label htmlFor="newCompanyName" className="block text-gray-700">
+              <label
+                htmlFor="newCompanyName"
+                className="block text-gray-700 mt-1 mb-1"
+              >
                 Enter New Company Name
               </label>
               <input
@@ -95,7 +104,7 @@ export default function DonateAsCompany() {
                 placeholder="e.g., Your New Company"
                 value={newCompanyName}
                 onChange={(e) => setNewCompanyName(e.target.value)}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full rounded-md shadow-sm border p-3  text-bg text-[#37AB87]  border-[#37AB87] "
                 required={companyName === "Other"}
               />
               {newCompanyName.trim() === "" && (
@@ -108,7 +117,7 @@ export default function DonateAsCompany() {
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-gray-700">
+          <label htmlFor="email" className="block text-gray-700 mt-1 mb-1">
             Email Address
           </label>
           <input
@@ -117,26 +126,26 @@ export default function DonateAsCompany() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            className="mt-1 block w-full rounded-md shadow-sm border p-3  text-bg text-[#37AB87]  border-[#37AB87] "
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label htmlFor="name" className="block text-gray-700">
+          <label htmlFor="name" className="block text-gray-700 mt-1 mb-1">
             Name
           </label>
           <input
             type="text"
             id="name"
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            className="mt-1 block w-full rounded-md shadow-sm border p-3  text-bg text-[#37AB87]  border-[#37AB87] "
             placeholder="Your Name"
           />
         </div>
 
         <div>
-          <label className="inline-flex items-center cursor-pointer">
+          <label className="inline-flex items-center cursor-pointer mt-1 mb-1">
             <input
               type="checkbox"
               checked={agreed}
@@ -158,13 +167,11 @@ export default function DonateAsCompany() {
             </span>
           </label>
         </div>
-
-        <button
-          type="submit"
-          className="bg-[#059669] hover:bg-[#037f57] text-white text-sm py-2 px-5 w-full rounded-full flex items-center justify-center focus:outline-none focus:ring focus:ring-blue-300 transition duration-150"
-        >
-          Donate Now <FaPaypal className="ml-2 text-xl" />
-        </button>
+        <div className=" text-center p-2 mt-4 mb-4">
+          <Button variant="success" size="lg" border="rounded" type="submit">
+            Donate Now <FaPaypal className="ml-2 text-xl" />
+          </Button>
+        </div>
       </form>
 
       {showDisclaimer && (
