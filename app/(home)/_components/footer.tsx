@@ -45,7 +45,7 @@ const Footer = () => {
             Your trusted partner in making a difference.
           </p> */}
         </div>
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 mb-6 md:mb-0">
+        <div className="grid grid-cols-4 gap-4 md:flex md:space-y-0 md:space-x-8 mb-6 md:mb-0">
           {navigationLinks.map((item, idx) =>
             item.external ? (
               <a
