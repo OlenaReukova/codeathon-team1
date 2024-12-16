@@ -30,7 +30,7 @@ export default function DonateAsIndividual() {
   const toggleDisclaimer = () => setShowDisclaimer((prev) => !prev);
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white rounded-lg lg:shadow-md md:shadow-md">
+    <div className="p-6 max-w-md mx-auto bg-white rounded-lg lg:shadow-md ">
       <h1 className="text-2xl font-semibold text-gray-900 mb-4">
         Donate as Individual
       </h1>
@@ -52,7 +52,7 @@ export default function DonateAsIndividual() {
           />
         </div>
 
-        <fieldset className="border border-gray-300 rounded-md p-4">
+        <fieldset className=" p-4">
           <legend className="text-gray-700 font-medium">Donation Type</legend>
           <div className="flex items-center mt-2">
             <input
@@ -68,7 +68,7 @@ export default function DonateAsIndividual() {
             <label
               id="anonymousLabel"
               htmlFor="anonymous"
-              className="ml-2 text-gray-700"
+              className="ml-2 text-gray-700 mt-1 mb-1"
             >
               Donate Anonymously
             </label>
@@ -87,7 +87,7 @@ export default function DonateAsIndividual() {
             <label
               id="provideDetailsLabel"
               htmlFor="provideDetails"
-              className="ml-2 text-gray-700"
+              className="ml-2 text-gray-700 mt-1 mb-1"
             >
               Provide Name and Email
             </label>
@@ -97,7 +97,7 @@ export default function DonateAsIndividual() {
         {donorType === "provideDetails" && (
           <>
             <div>
-              <label htmlFor="email" className="block text-gray-700">
+              <label htmlFor="email" className="block text-gray-700 mt-1 mb-1">
                 Email Address <span className="text-red-600">*</span>
               </label>
               <input
@@ -106,12 +106,12 @@ export default function DonateAsIndividual() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                className="border p-3 rounded-md w-full text-bg text-[#37AB87]  pl-2 border-[#37AB87]"
                 placeholder="Enter your email address"
               />
             </div>
             <div>
-              <label htmlFor="name" className="block text-gray-700">
+              <label htmlFor="name" className="block text-gray-700 mt-1 mb-1">
                 Full Name <span className="text-red-600">*</span>
               </label>
               <input
@@ -120,7 +120,7 @@ export default function DonateAsIndividual() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                className="border p-3 rounded-md w-full text-bg text-[#37AB87]  pl-2 border-[#37AB87]"
                 placeholder="Enter your full name"
               />
             </div>
@@ -136,7 +136,7 @@ export default function DonateAsIndividual() {
             className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded"
             id="agreement"
           />
-          <label htmlFor="agreement" className="ml-2 text-gray-700">
+          <label htmlFor="agreement" className="ml-2 text-gray-700 mt-1 mb-1">
             I agree to the{" "}
             <button
               type="button"

@@ -160,7 +160,7 @@ export default function DonateAsCompany() {
               <button
                 type="button"
                 onClick={toggleDisclaimer}
-                className="text-blue-500 hover:underline"
+                className="text-green-500 hover:underline"
               >
                 disclaimer
               </button>
